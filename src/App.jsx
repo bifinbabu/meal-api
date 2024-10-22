@@ -1,4 +1,5 @@
 import { useState } from "react";
+import loadingGif from "./assets/148.gif";
 import "./App.css";
 import axios from "axios";
 
@@ -7,10 +8,13 @@ function App() {
   const [meals, setMeals] = useState();
   const [loading, setLoading] = useState(false);
   const [videoLoading, setVideoLoading] = useState({});
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const fetchData = async (searchKey) => {
     try {
       setLoading(true);
+      setIsInitialLoad(false);
+      setMeals(null);
       let response = await axios.get(
         `https://www.themealdb.com/api/json/v1/1/search.php?s=${searchKey}`
       );
@@ -47,7 +51,11 @@ function App() {
             Search
           </button>
         </form>
-        {loading && <p className="loading">Loading...</p>}
+        {loading && (
+          <div className="loading">
+            <img src={loadingGif} alt="Loading..." />
+          </div>
+        )}
         <div className="results-container">
           {meals ? (
             meals.length > 0 ? (
@@ -81,11 +89,21 @@ function App() {
                 </div>
               ))
             ) : (
-              <p>No meals found.</p>
+              <p className="message error">
+                No meals found. Please try a different search.
+              </p>
             )
-          ) : (
-            <p>Error: Meals data is not available.</p>
-          )}
+          ) : !loading ? (
+            isInitialLoad ? (
+              <p className="message welcome">
+                Try searching something to get started
+              </p>
+            ) : (
+              <p className="message error">
+                Oops! No meals found. Please try a different search.
+              </p>
+            )
+          ) : null}
         </div>
       </div>
     </>
