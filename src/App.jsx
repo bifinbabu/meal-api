@@ -22,25 +22,44 @@ function App() {
 
   return (
     <>
-      <div style={{ padding: 10 }}>
+      <div className="container">
         <input
           type="text"
+          className="search-input"
           placeholder="Search..."
           onChange={(e) => setSearchKey(e.target.value)}
           value={searchKey}
         />
-        <button onClick={() => fetchData(searchKey)}>Search</button>
-        {meals?.length > 0 && (
-          <div>
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <img
-                src={meals[0].strMealThumb}
-                alt=""
-                style={{ width: "40px", height: "40px" }}
-              />
-              <p style={{ marginTop: "50px" }}>{meals[0].strMeal}</p>
-            </div>
-          </div>
+        <button className="search-button" onClick={() => fetchData(searchKey)}>
+          Search
+        </button>
+        {meals ? (
+          meals.length > 0 ? (
+            meals.map((meal) => (
+              <div className="meal-item" key={meal.idMeal}>
+                <img
+                  src={meal.strMealThumb}
+                  alt={meal.strMeal}
+                  className="meal-image"
+                />
+                <p className="meal-name">{meal.strMeal}</p>
+                <iframe
+                  width="100%"
+                  height="315"
+                  src={meal.strYoutube.replace("watch?v=", "embed/")}
+                  title={meal.strMeal}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="meal-video"
+                ></iframe>
+              </div>
+            ))
+          ) : (
+            <p>No meals found.</p>
+          )
+        ) : (
+          <p>Error: Meals data is not available.</p>
         )}
       </div>
     </>
